@@ -1,63 +1,109 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=19821636&assignment_repo_type=AssignmentRepo)
-# Express.js RESTful API Assignment
+# Week 2 Express.js Assignment
+A RESTful API built with Express.js for managing products, including CRUD operations, middleware, error handling, and advanced features like filtering, pagination, and search.
+Setup Instructions
 
-This assignment focuses on building a RESTful API using Express.js, implementing proper routing, middleware, and error handling.
+## Clone the Repository:
 
-## Assignment Overview
+```git clone <your-repository-url>```
+```cd week-2-express-js-assignment-Nicolex0```
 
-You will:
-1. Set up an Express.js server
-2. Create RESTful API routes for a product resource
-3. Implement custom middleware for logging, authentication, and validation
-4. Add comprehensive error handling
-5. Develop advanced features like filtering, pagination, and search
 
-## Getting Started
+## Install Dependencies:
+```npm install```
 
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Install dependencies:
-   ```
-   npm install
-   ```
-4. Run the server:
-   ```
-   npm start
-   ```
 
-## Files Included
+## Set Environment Variables:
 
-- `Week2-Assignment.md`: Detailed assignment instructions
-- `server.js`: Starter Express.js server file
-- `.env.example`: Example environment variables file
+Copy `.env.example` to `.env` and set the ```API_KEY:cp .env.example .env```
 
-## Requirements
 
-- Node.js (v18 or higher)
-- npm or yarn
-- Postman, Insomnia, or curl for API testing
+Default API_KEY is ```my-secret-key``` for testing.
+
+
+## Run the Server:
+```npm start```
+
+
+The server runs on ```http://localhost:3000```.
+
+
 
 ## API Endpoints
+Root
 
-The API will have the following endpoints:
+```GET /```: Returns a welcome message.
+Example: ```curl http://localhost:3000```
+Response: ```"Welcome to the Product API! Go to /api/products to see all products."```
 
-- `GET /api/products`: Get all products
-- `GET /api/products/:id`: Get a specific product
-- `POST /api/products`: Create a new product
-- `PUT /api/products/:id`: Update a product
-- `DELETE /api/products/:id`: Delete a product
 
-## Submission
 
-Your work will be automatically submitted when you push to your GitHub Classroom repository. Make sure to:
+## Products
 
-1. Complete all the required API endpoints
-2. Implement the middleware and error handling
-3. Document your API in the README.md
-4. Include examples of requests and responses
+```GET /api/products```: List all products with optional filtering, search, and pagination.
 
-## Resources
+### Query Parameters:
+category: Filter by category (e.g., electronics).
+search: Search by product name.
+page: Page number (default: 1).
+limit: Items per page (default: 10).
 
-- [Express.js Documentation](https://expressjs.com/)
-- [RESTful API Design Best Practices](https://restfulapi.net/)
-- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) 
+
+Example: ```curl -H "x-api-key: my-secret-key" "http://localhost:3000/api/products?category=electronics&page=1&limit=5"```
+Response:
+{
+  "total": 2,
+  "page": 1,
+  "limit": 5,
+  "products": [
+    { "id": "1", "name": "Laptop", "description": "High-performance laptop with 16GB RAM", "price": 1200, "category": "electronics", "inStock": true },
+    { "id": "2", "name": "Smartphone", "description": "Latest model with 128GB storage", "price": 800, "category": "electronics", "inStock": true }
+  ]
+}
+
+
+
+
+```GET /api/products/:id```: Get a product by ID.
+
+Example: ```curl -H "x-api-key: my-secret-key" http://localhost:3000/api/products/1```
+Response: 
+{"id": "1", "name": "Laptop", ...}
+
+
+```POST /api/products```: Create a new product.
+
+Body: { "name": "string", "description": "string", "price": number, "category": "string", "inStock": boolean }
+Example: ```curl -X POST -H "x-api-key: my-secret-key" -H "Content-Type: application/json" -d '{"name":"Tablet","description":"10-inch tablet","price":300,"category":"electronics","inStock":true}' http://localhost:3000/api/products```
+Response: 
+{"message": "Product created", "product": {...}}
+
+
+```PUT /api/products/:id```: Update a product.
+
+Body: Same as POST.
+Example: ```curl -X PUT -H "x-api-key: my-secret-key" -H "Content-Type: application/json" -d '{"name":"Updated Laptop","description":"Updated description","price":1300,"category":"electronics","inStock":false}' http://localhost:3000/api/products/1```
+Response: 
+{"message": "Product updated", "product": {...}}
+
+
+```DELETE /api/products/:id```: Delete a product.
+
+Example: ```curl -X DELETE -H "x-api-key: my-secret-key" http://localhost:3000/api/products/1```
+Response: 
+{"message": "Product deleted", "product": {...}}
+
+
+```GET /api/products/stats```: Get product statistics (count by category).
+
+Example: ```curl -H "x-api-key: my-secret-key" http://localhost:3000/api/products/stats```
+Response: 
+{"categoryCounts": {"electronics": 2, "kitchen": 1}}
+
+
+
+## Environment Variables
+See `.env.example` for required variables.
+
+## Testing
+Use Postman, Insomnia, or curl to test the API. Ensure the x-api-key header is included in all requests except the root (/).
+
